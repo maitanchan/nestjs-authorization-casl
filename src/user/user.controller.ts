@@ -1,0 +1,105 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, ForbiddenException, UseGuards } from '@nestjs/common';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory';
+import { Action } from '../casl/enum/action.enum';
+import { User } from './entities/user.entity';
+import { ForbiddenError } from '@casl/ability';
+import { CheckAbilities } from '../casl/decorator/ability.decorator';
+import { AbilitiesGuard } from '../casl/guard/abilities.guard';
+
+@Controller('users')
+export class UserController {
+
+  constructor(
+    private readonly userService: UserService,
+    private readonly caslAbilityFactory: CaslAbilityFactory
+  ) { }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+
+    const user = { id: 1, isAdmin: false, orgId: 1 }  //req.user
+
+    const ability = this.caslAbilityFactory.createForUser(user)
+
+    // const isAllowed = ability.can(Action.Create, User)
+
+    // if (!isAllowed) {
+    //   throw new ForbiddenException('Only Admin Allow To Action')
+    // }
+
+    try {
+
+      ForbiddenError.from(ability).throwUnlessCan(Action.Create, User)
+
+      return this.userService.create(createUserDto);
+
+    } catch (error) {
+
+      if (error instanceof ForbiddenError) {
+
+        throw new ForbiddenException(error.message)
+
+      }
+
+    }
+
+
+  }
+
+  @Get()
+  @CheckAbilities({ action: Action.Read, subject: User })
+  findAll() {
+
+    return this.userService.findAll()
+
+  }
+
+  @Get(':id')
+  @CheckAbilities({ action: Action.Read, subject: User })
+  findOne(@Param('id') id: string) {
+
+    return this.userService.findOne(+id)
+
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+
+    const user = { id: 1, isAdmin: true, orgId: 7 } //req.user
+
+    const ability = this.caslAbilityFactory.createForUser(user)
+
+
+    try {
+
+      const user = this.userService.findOne(+id)
+
+      ForbiddenError.from(ability).throwUnlessCan(Action.Update, user)
+
+      return this.userService.update(+id, updateUserDto)
+
+
+    } catch (error) {
+
+      if (error instanceof ForbiddenError) {
+
+        throw new ForbiddenException(error.message)
+
+      }
+
+    }
+
+  }
+
+  @CheckAbilities({ action: Action.Delete, subject: User })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+
+    return this.userService.remove(+id)
+
+  }
+
+}
