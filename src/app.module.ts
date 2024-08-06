@@ -7,8 +7,11 @@ import { APP_GUARD } from '@nestjs/core';
 @Module({
 
   imports: [
+
     UserModule,
+
     CaslAbilityModule
+
   ],
 
   providers: [

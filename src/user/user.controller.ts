@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ForbiddenException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ForbiddenException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,7 +7,6 @@ import { Action } from '../casl/enum/action.enum';
 import { User } from './entities/user.entity';
 import { ForbiddenError } from '@casl/ability';
 import { CheckAbilities } from '../casl/decorator/ability.decorator';
-import { AbilitiesGuard } from '../casl/guard/abilities.guard';
 
 @Controller('users')
 export class UserController {

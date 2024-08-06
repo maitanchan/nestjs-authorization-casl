@@ -3,13 +3,9 @@ import { CaslAbilityFactory } from './casl-ability.factory';
 
 @Module({
 
-    providers: [
-        CaslAbilityFactory
-    ],
+    providers: [CaslAbilityFactory],
 
-    exports: [
-        CaslAbilityFactory
-    ]
+    exports: [CaslAbilityFactory]
 
 })
 export class CaslAbilityModule { }

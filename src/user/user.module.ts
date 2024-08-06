@@ -5,17 +5,11 @@ import { CaslAbilityModule } from '../casl/casl-ability.module';
 
 @Module({
 
-  imports: [
-    CaslAbilityModule
-  ],
+  imports: [CaslAbilityModule],
 
-  controllers: [
-    UserController
-  ],
+  controllers: [UserController],
 
-  providers: [
-    UserService
-  ]
+  providers: [UserService]
 
 })
 export class UserModule { }

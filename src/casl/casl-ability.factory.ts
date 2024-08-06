@@ -17,11 +17,12 @@ export class CaslAbilityFactory {
         if (user.isAdmin) {
 
             can(Action.Manage, 'all')
+
             cannot(Action.Manage, User, { orgId: { $ne: user.orgId } }).because('You can only manage users in your own organization')
 
         } else {
 
-            can(Action.Read, User, ['id'])
+            can(Action.Read, User)
             cannot(Action.Create, User).because('Only Admin Allow To Action')
             cannot(Action.Update, User).because('Only Admin Allow To Action')
             cannot(Action.Delete, User).because('Only Admin Allow To Action')
